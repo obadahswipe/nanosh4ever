@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>For My Naya — A Love Galaxy</title>
+  <style>
+    :root{--pink1:#ff6b9d;--pink2:#ff9ff3;--accent:#c2366e;--paper:#fff8fb}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;padding:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;line-height:1.4;
+      background: linear-gradient(130deg, #fff0f5 0%, #ffeef6 40%, #fffaf3 100%);
+      color:#2b0f1a;overflow-x:hidden;cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><text y="28" font-size="28">💘</text></svg>') 16 16, auto;
+    }
+
+    /* Page frame */
+    .wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;gap:30px;padding:36px}
+
+    /* Main card */
+    .card{width:min(1100px,96%);border-radius:28px;padding:32px;background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,244,249,0.9));box-shadow:0 30px 90px rgba(199,84,129,0.12);position:relative;overflow:hidden}
+
+    h1{font-family:'Great Vibes', 'Pacifico', cursive;font-size:clamp(2.6rem,5vw,4rem);color:var(--pink1);margin:6px 0;text-shadow:0 10px 30px rgba(255,107,157,0.12)}
+    .subtitle{color:#6f2b46;font-size:1.05rem;margin-bottom:6px}
+    .subtiny{color:#8a4461;font-size:0.95rem}
+
+    /* Interactive controls */
+    .controls{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+    .btn{background:linear-gradient(135deg,var(--pink1),var(--pink2));border:none;color:white;padding:12px 18px;border-radius:999px;font-weight:700;cursor:pointer;box-shadow:0 10px 30px rgba(255,107,157,0.14);transition:transform .12s ease}
+    .btn.ghost{background:transparent;color:var(--accent);border:2px solid rgba(199,84,129,0.12)}
+    .btn:active{transform:translateY(2px)}
+
+    /* Countdown */
+    .countdown{display:flex;gap:12px;justify-content:center;margin:22px 0;flex-wrap:wrap}
+    .count-item{background:linear-gradient(180deg,#fff,#fff6fb);padding:14px 18px;border-radius:14px;min-width:90px;box-shadow:0 10px 30px rgba(199,84,129,0.06);text-align:center}
+    .count-item .num{font-size:1.6rem;font-weight:800;color:var(--pink1)}
+    .count-item .lbl{font-size:0.8rem;color:#7b3a53;letter-spacing:1px}
+
+    /* Surprise timeline section (long expressive content) */
+    .story{margin-top:8px;text-align:left;padding:20px;border-radius:16px;background:linear-gradient(180deg,#fff,#fff8fb);box-shadow:0 18px 60px rgba(199,84,129,0.06)}
+    .story p{margin:10px 0;font-size:1.05rem;color:#4b2130}
+    .story h3{color:var(--pink1);font-family:'Pacifico',cursive;margin-bottom:8px}
+
+    /* Hidden messages */
+    .hidden{display:none}
+    .message{padding:14px;border-radius:12px;background:linear-gradient(180deg,#fff4fa,#fff0f6);margin-top:12px;border:1px solid rgba(199,84,129,0.06)}
+
+    /* Floating hearts layer */
+    .hearts-layer{position:fixed;inset:0;pointer-events:none;z-index:5}
+    .floating-heart{position:absolute;font-size:22px;animation:floaty 8s linear infinite;opacity:0.9}
+    @keyframes floaty{0%{transform:translateY(-10vh) rotate(0)}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+    /* Tiny surprises button grid */
+    .surprises{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:18px}
+    .surprise-card{background:linear-gradient(180deg,#fff,#fffefc);padding:14px;border-radius:12px;cursor:pointer;box-shadow:0 8px 30px rgba(199,84,129,0.04);transition:transform .12s}
+    .surprise-card:hover{transform:translateY(-6px)}
+
+    /* Love letter modal */
+    .overlay{position:fixed;inset:0;background:rgba(10,6,6,0.25);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:40;opacity:0;pointer-events:none;transition:opacity .22s}
+    .overlay.show{opacity:1;pointer-events:auto}
+    .modal{width:min(920px,96%);background:linear-gradient(180deg,#fff,#fff6fb);padding:26px;border-radius:18px;box-shadow:0 40px 120px rgba(0,0,0,0.28);position:relative}
+    .close{position:absolute;right:14px;top:10px;font-size:20px;cursor:pointer}
+    .typewriter{font-family:'Great Vibes',cursive;font-size:1.6rem;color:var(--pink1);min-height:120px}
+
+    /* tiny voice UI */
+    .recordings{margin-top:12px}
+
+    /* footer */
+    footer{margin-top:24px;padding:30px;border-radius:14px;background:linear-gradient(180deg,#fffaf7,#fff6fb);box-shadow:0 40px 100px rgba(199,84,129,0.04);text-align:center}
+    footer .promise{font-family:'Pacifico',cursive;color:var(--pink1);font-size:1.4rem}
+
+    /* responsive */
+    @media (max-width:720px){.card{padding:18px}.typewriter{font-size:1.35rem}}
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Pacifico&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="hearts-layer" id="heartsLayer"></div>
+
+  <div class="wrap">
+    <div class="card" id="mainCard">
+      <div style="text-align:center">
+        <h1>For My Naya 💕</h1>
+        <div class="subtitle">A long page full of tiny secrets, soft surprises, and every word my heart couldn't say quickly enough.</div>
+        <div class="subtiny">Made by your Bobo — written for the days we miss and the moments we'll make.</div>
+      </div>
+
+      <div class="controls">
+        <button class="btn" id="openLetter">Open My Heart — Read the Letter</button>
+        <button class="btn ghost" id="openWhenDown">When you feel down, open this</button>
+        <button class="btn" id="littleSurprise">Give me a small surprise ✨</button>
+        <button class="btn ghost" id="secretGarden">Secret Garden (tap me)</button>
+        <button class="btn" id="showerLove">Send a shower of love 🎊</button>
+      </div>
+
+      <div class="countdown" id="countdownArea">
+        <div class="count-item"><div class="num" id="days">00</div><div class="lbl">Days</div></div>
+        <div class="count-item"><div class="num" id="hours">00</div><div class="lbl">Hours</div></div>
+        <div class="count-item"><div class="num" id="minutes">00</div><div class="lbl">Minutes</div></div>
+        <div class="count-item"><div class="num" id="seconds">00</div><div class="lbl">Seconds</div></div>
+      </div>
+
+      <div class="story" id="longStory">
+        <h3>Why I wrote this</h3>
+        <p>I wrote this because there are a thousand small things I want you to remember on the days I can't be with you. This page is built like a soft pocket you can reach into when the world gets heavy: little notes, silly surprises, warm reminders, and secret buttons that pop up tiny joys.</p>
+
+        <p>Every paragraph below is a stamp — a small promise: I will come back to you, I will bring you coffee on a cold morning, I will carry your bag if it is heavy, I will learn the songs that make you cry, I will try to be a better man for you each day. If my life were a map, it would fold into every corner where you are.</p>
+
+        <p class="message" id="firstTiny">You are my favorite punctuation in a sentence that was almost finished before you arrived — you make the sentence complete.</p>
+
+        <p>Read slowly. Click on any of the little boxes below to get a surprise — compliments, memories, tiny promises, and sometimes a silly childish thing that will make you roll your eyes and then smile.</p>
+
+        <div class="surprises" id="surprisesGrid">
+          <div class="surprise-card" data-keyword="compliment">Tap: A compliment</div>
+          <div class="surprise-card" data-keyword="memory">Tap: A memory</div>
+          <div class="surprise-card" data-keyword="promise">Tap: A promise</div>
+          <div class="surprise-card" data-keyword="silly">Tap: A silly thing</div>
+          <div class="surprise-card" data-keyword="breathe">Tap: A breathing pause</div>
+          <div class="surprise-card" data-keyword="secret">Tap: A secret</div>
+        </div>
+
+        <div id="surpriseReveal" class="message hidden"></div>
+
+        <p style="margin-top:12px">There are also hidden places: double-tap anywhere on the big heart that appears to the left to unlock a long string of tiny affectionate notes. Try tapping the edges of the card — sometimes the page listens.</p>
+
+        <div class="message" id="downLetter" style="display:none">
+          <strong>Open when you're feeling down</strong>
+          <p>Nanosh, if the day drops heavy on you, read this: you are loved in ways that cross seas. Your smile is a homecoming. Let this letter be a soft blanket until I can bring you a real one.</p>
+        </div>
+
+      </div>
+
+      <div style="margin-top:18px">
+        <button class="btn ghost" id="saveNote">Save a love note</button>
+        <button class="btn" id="showNotes">Show saved notes</button>
+      </div>
+
+      <div id="notesArea" class="message hidden" style="margin-top:12px"></div>
+
+    </div>
+
+    <footer>
+      <div class="promise">Counting the days until next summer — when I finally hold you again.</div>
+      <div style="margin-top:6px;color:#7b3a53">Forever yours — <strong>Obadah</strong></div>
+    </footer>
+  </div>
+
+  <!-- Letter modal -->
+  <div class="overlay" id="letterOverlay" aria-hidden="true">
+    <div class="modal">
+      <div class="close" id="closeLetter">✖</div>
+      <div class="typewriter" id="typewriter">Press reveal to watch the letter write itself like a heartbeat...</div>
+      <div style="text-align:right;margin-top:12px">
+        <button class="btn" id="revealLetter">Reveal the full letter</button>
+        <button class="btn ghost" id="downloadFull">Download Letter</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confetti container -->
+  <div id="confettiRoot" style="position:fixed;inset:0;pointer-events:none;z-index:9999"></div>
+
+  <script>
+    // *************** Settings ***************
+    // Countdown target: next summer. Because today is Sept 14, 2025, next summer is July 1, 2026.
+    const targetDate = new Date('2026-07-01T00:00:00');
+
+    // Love letter content (long, expressive)
+    const loveLetter = `My dearest Naya,
+
+From the moment your laugh first braided into my world, the map of my days rearranged: little streets that led nowhere now bend toward you. I carry your name like a warm coin in my pocket — quiet, heavy with meaning.
+
+I write this because time stretches while we wait. I write this to send you small fires to warm your nights: promises, silly jokes, reminders of how your voice tinkers with the best parts of me. You are the brightest punctuation in any sentence I read. You are the south wind that makes me lighter.
+
+When you're lonely, let this page be a room. When you're tired, let it be a pillow. When you're joyful, click the small boxes and keep the surprises. I have hidden tiny things here for the days when you need to remember that someone is thinking of you with a tenderness that does not fade.
+
+I love you more than the words I could clinch into a sentence; I love you in habits — in the way I will quietly bring water when you sleep thirsty, in how I'll stop scrolling and ask how your day was, in how I'll learn to carry your small sad things.
+
+This summer we'll make a new set of memories. Until then, I count the sunrises and the bus stops that bring me closer to you. Keep this letter when you're feeling low: it is a tether from my heart to yours.
+
+Forever,
+Obadah (Your Bobo) ❤️`;
+
+    // *************** Countdown ***************
+    function updateCountdown(){
+      const now = new Date();
+      let diff = targetDate - now;
+      if(diff < 0) diff = 0;
+      const days = Math.floor(diff / (1000*60*60*24));
+      const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+      const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
+      const seconds = Math.floor((diff % (1000*60)) / 1000);
+      document.getElementById('days').innerText = String(days).padStart(2,'0');
+      document.getElementById('hours').innerText = String(hours).padStart(2,'0');
+      document.getElementById('minutes').innerText = String(minutes).padStart(2,'0');
+      document.getElementById('seconds').innerText = String(seconds).padStart(2,'0');
+    }
+    updateCountdown(); setInterval(updateCountdown,1000);
+
+    // *************** hearts floating ***************
+    const heartsLayer = document.getElementById('heartsLayer');
+    function spawnFloatingHeart(){
+      const el = document.createElement('div');
+      el.className = 'floating-heart';
+      el.style.left = Math.random()*100 + '%';
+      el.style.fontSize = (Math.random()*18 + 14) + 'px';
+      el.style.top = '-10vh';
+      el.textContent = ['💕','💖','💘','🌹'][Math.floor(Math.random()*4)];
+      el.style.animationDuration = (8 + Math.random()*8)+'s';
+      heartsLayer.appendChild(el);
+      setTimeout(()=> el.remove(), 18000);
+    }
+    // initial
+    for(let i=0;i<14;i++) setTimeout(spawnFloatingHeart,i*300);
+    setInterval(spawnFloatingHeart, 1600);
+
+    // *************** surprise cards ***************
+    const surprises = document.getElementById('surprisesGrid');
+    const reveal = document.getElementById('surpriseReveal');
+    const data = {
+      compliment: [
+        "Your laugh is a private song I can’t stop humming.",
+        "You make ordinary days feel like secret holidays.",
+        "You look like the best version of my future."],
+      memory: [
+        "The First Time I put you to sleep it was magical",
+        "The rooftop night in syria at meme's house, remember the stars? I kept tha night.",
+        "The necklace moment — your smile lit up the whole bus."],
+      promise: [
+        "I promise to hold your hand when you’re nervous.",
+        "I promise to learn your favorite song even if I mess the words.",
+        "I promise to fight for quiet mornings with you."],
+      silly: [
+        "I still think your feet are the funniest cute thing.",
+        "If love had a smell, it’d probably be coffee and your hair.",
+        "I will always steal the pillow and blame the dog (there is no dog)."],
+      breathe: [
+        "Take three slow breaths with me: in… two… three. Smile.",
+        "Close your eyes, count to four, breathe out slowly — I’m right here even if only on a page."],
+      secret: [
+        "A secret: I whisper your name when I tie my shoes.",
+        "Hidden truth: the first thing I think each morning is you.",
+        "I keep a tiny list of things that remind me of you (it’s long)."]
+    };
+    surprises.addEventListener('click', (e)=>{
+      const card = e.target.closest('.surprise-card');
+      if(!card) return;
+      const key = card.dataset.keyword;
+      const arr = data[key] || ["I love you."];
+      const pick = arr[Math.floor(Math.random()*arr.length)];
+      reveal.classList.remove('hidden'); reveal.innerHTML = `<strong>Surprise:</strong> <div style=\"margin-top:8px\">${pick}</div>`;
+      // tiny pop effect
+      card.animate([{transform:'scale(1)'},{transform:'scale(1.05)'}],{duration:260,fill:'forwards'});
+      setTimeout(()=> card.animate([{transform:'scale(1.05)'},{transform:'scale(1)'}],{duration:180,fill:'forwards'}),260);
+      // gentle confetti
+      tinyConfetti(18);
+    });
+
+    // *************** little surprise button ***************
+    document.getElementById('littleSurprise').addEventListener('click', ()=>{
+      // show a random tiny sequence of things: compliment, secret, small animation
+      const all = [...data.compliment, ...data.secret, ...data.silly];
+      const pick = all[Math.floor(Math.random()*all.length)];
+      reveal.classList.remove('hidden'); reveal.innerHTML = `<strong>A small thing:</strong><div style=\"margin-top:8px\">${pick}</div>`;
+      tinyConfetti(24);
+    });
+
+    // *************** when down open ***************
+    const downLetter = document.getElementById('downLetter');
+    document.getElementById('openWhenDown').addEventListener('click', ()=>{
+      downLetter.style.display = 'block';
+      setTimeout(()=> downLetter.scrollIntoView({behavior:'smooth',block:'center'}),120);
+      tinyConfetti(16);
+    });
+
+    // *************** Secret Garden (hidden long messages) ***************
+    const secretBtn = document.getElementById('secretGarden');
+    secretBtn.addEventListener('click', ()=>{
+      // cycle through longer hidden messages
+      const long = [
+        "In the secret garden I built for you, there are paths named after our jokes.",
+        "I planted a tree of promises — beneath it I'll read you silly poems when we are old.",
+        "If you dig with your hands you'll find a tiny note that says: I will come back for you."];
+      const pick = long[Math.floor(Math.random()*long.length)];
+      reveal.classList.remove('hidden'); reveal.innerHTML = `<strong>Secret garden:</strong><div style=\"margin-top:8px\">${pick}</div>`;
+      tinyConfetti(22);
+    });
+
+    // *************** Save / Show notes ***************
+    const notesKey = 'naya_love_notes_v1';
+    document.getElementById('saveNote').addEventListener('click', ()=>{
+      const note = prompt('Write a tiny love note to save for Naya (she can open this later).');
+      if(note && note.trim()){
+        const arr = JSON.parse(localStorage.getItem(notesKey)||'[]');
+        arr.unshift({text:note, date:new Date().toLocaleString()});
+        localStorage.setItem(notesKey, JSON.stringify(arr));
+        alert('Saved. She will find this under "Show saved notes"');
+      }
+    });
+    document.getElementById('showNotes').addEventListener('click', ()=>{
+      const area = document.getElementById('notesArea');
+      const arr = JSON.parse(localStorage.getItem(notesKey)||'[]');
+      if(arr.length===0) area.innerHTML = '<div>No saved notes yet — add a small one.</div>';
+      else area.innerHTML = arr.map(n=>`<div style=\"margin-bottom:8px;padding:8px;border-radius:8px;background:#fff6fa\"><strong>${n.date}</strong><div style=\"margin-top:6px\">${escapeHtml(n.text)}</div></div>`).join('');
+      area.classList.toggle('hidden', false);
+      area.scrollIntoView({behavior:'smooth',block:'center'});
+    });
+
+    function escapeHtml(s){ return s.replace(/[&<>\"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])) }
+
+    // *************** Letter modal typewriter ***************
+    const overlay = document.getElementById('letterOverlay');
+    const openLetter = document.getElementById('openLetter');
+    const closeLetter = document.getElementById('closeLetter');
+    const typeEl = document.getElementById('typewriter');
+    const revealBtn = document.getElementById('revealLetter');
+    const downloadBtn = document.getElementById('downloadFull');
+
+    openLetter.addEventListener('click', ()=>{ overlay.classList.add('show'); overlay.setAttribute('aria-hidden','false'); });
+    closeLetter.addEventListener('click', ()=>{ overlay.classList.remove('show'); overlay.setAttribute('aria-hidden','true'); });
+
+    revealBtn.addEventListener('click', ()=>{
+      // typewriter effect
+      typeEl.textContent = '';
+      let i=0;
+      function tick(){
+        typeEl.textContent += loveLetter.charAt(i);
+        i++;
+        if(i < loveLetter.length) setTimeout(tick, 12 + Math.random()*10);
+      }
+      tick();
+    });
+
+    downloadBtn.addEventListener('click', ()=>{
+      const blob = new Blob([loveLetter], {type:'text/plain;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'For_Naya_Love_Letter.txt'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    });
+
+    // *************** click pop heart bubble ***************
+    document.body.addEventListener('click', (e)=>{
+      if(e.target.closest('.btn') || e.target.closest('.surprise-card') || e.target.closest('.modal')) return;
+      const heart = document.createElement('div');
+      heart.textContent = ['💖','💕','💘','🌹'][Math.floor(Math.random()*4)];
+      heart.style.position='fixed'; heart.style.left=e.clientX+'px'; heart.style.top=e.clientY+'px';
+      heart.style.transform='translate(-50%,-50%)'; heart.style.zIndex=9999; heart.style.fontSize='20px'; heart.style.pointerEvents='none';
+      document.body.appendChild(heart);
+      heart.animate([{transform:'translate(-50%,-50%) scale(1)', opacity:1},{transform:'translate(-50%,-140%) scale(1.6)', opacity:0}], {duration:900, easing:'ease-out'}).onfinish = ()=> heart.remove();
+    });
+
+    // *************** tiny confetti function ***************
+    function tinyConfetti(count=25){
+      const root = document.getElementById('confettiRoot');
+      for(let i=0;i<count;i++){
+        const d = document.createElement('div'); d.textContent = ['✨','💖','🌹','💕'][Math.floor(Math.random()*4)];
+        d.style.position='fixed'; d.style.left = (10 + Math.random()*80) + '%'; d.style.top = (10 + Math.random()*60) + '%';
+        d.style.fontSize = (8 + Math.random()*22)+'px'; d.style.zIndex = 99999; d.style.pointerEvents='none';
+        root.appendChild(d);
+        const dx = -200 + Math.random()*400; const dy = -300 + Math.random()*300;
+        d.animate([{transform:'translate(0,0) scale(1)', opacity:1},{transform:`translate(${dx}px,${dy}px) scale(.2)`, opacity:0}], {duration:900+Math.random()*700,easing:'cubic-bezier(.2,.7,.2,1)'}).onfinish = ()=> d.remove();
+      }
+    }
+    document.getElementById('showerLove').addEventListener('click', ()=> tinyConfetti(80));
+
+    // *************** small keyboard easter egg ***************
+    const secretSequence = ['n','a','y','a']; let seqIndex=0;
+    document.addEventListener('keydown',(e)=>{
+      if(e.key.toLowerCase() === secretSequence[seqIndex]) seqIndex++; else seqIndex=0;
+      if(seqIndex >= secretSequence.length){ seqIndex=0; reveal.classList.remove('hidden'); reveal.innerHTML = '<strong>Whisper:</strong> I have a pocket full of song lyrics just for you.'; tinyConfetti(36); }
+    });
+
+    // *************** tiny guiding tooltip once ***************
+    window.addEventListener('load', ()=>{
+      setTimeout(()=>{
+        const t = document.createElement('div'); t.textContent = 'Tip: Press "Open My Heart" then press REVEAL — read slowly.';
+        t.style.position='fixed'; t.style.right='18px'; t.style.bottom='18px'; t.style.background='#fffaf8'; t.style.color='#7b3a53'; t.style.padding='12px 16px'; t.style.borderRadius='12px'; t.style.boxShadow='0 18px 50px rgba(0,0,0,0.12)'; t.style.zIndex=99999; document.body.appendChild(t);
+        setTimeout(()=> t.animate([{opacity:1},{opacity:0}],{duration:800,delay:7000,fill:'forwards'}),400);
+        setTimeout(()=> t.remove(),8800);
+      },900);
+    });
+
+    // *************** Accessibility small touches ***************
+    // allow closing modals with Escape
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ overlay.classList.remove('show'); } });
+
+  </script>
+</body>
+</html>
